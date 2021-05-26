@@ -128,7 +128,7 @@ const app = {
             return item.nowDoing === true
           });
       }
-      this.TomatoNum = JSON.parse(localStorage.getItem('TomatoNum'));
+      this.TomatoNum = JSON.parse(localStorage.getItem('TomatoNum') || 0);
     },
   }
   
