@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <link rel="stylesheet" href="all.css">
+    <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body class="bg-theme-secondary">
+    <div id="app" class="h-100">
+        <div class="container-fluid h-100">
+            <div class="row py-4 h-100">
+                <div class="col-3 d-none d-md-block me-4">
+                    <div class="d-flex align-items-center ms-3 position-fixed">
+                        <img width="47" height="47" src="images/tomato_r.png" alt="tomato_r">
+                        <h1 class="text-white h3 mb-0">Pomodoro</h1>
+                    </div>
+                    <p class="tag py-3 ps-3 pe-4 text-white">{{showList ? '任務列表' : '主頁面'}}</p>
+                </div>
+                <div class="col-md-8" v-if="showList">
+                    <div class="bg-theme-primary-circle rounded p-3 py-4 h-100">
+                        <ul class="nav">
+                            <img width="47" height="47" src="images/tomato_r.png" alt="tomato_r">
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="#"
+                                    @click.prevent="this.showList = false">番茄鐘</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#">任務</a>
+                            </li>
+                        </ul>
+                        <div class="row mt-5">
+                            <div class="col-10 col-md-8 col-lg-5 mx-auto">
+                                <ul class="text-theme d-flex flex-column mt-5">
+                                    <div class="input-group mt-3 mb-5 border-theme rounded">
+                                        <input type="text" class="form-control text-theme border-0" placeholder="請輸入任務"
+                                            aria-label="Recipient's username" aria-describedby="button-addon2"
+                                            v-model="newTask" @keyup.enter="addTask">
+                                        <a href="#" class="text-theme py-2 px-3 text-decoration-none"
+                                            @click.prevent="addTask">+</a>
+                                    </div>
+                                    <li class="mb-3 px-2 d-flex justify-content-between align-items-center"
+                                        v-for="(item,i) in list" :key="i">
+                                        <div class="d-flex">
+                                            <a href="#" @click.prevent="doThisTask(i)" class="my-auto">
+                                                <i class="fa-circle text-theme me-3"
+                                                    :class="{far: !item.nowDoing , fad: item.nowDoing }"></i>
+                                            </a>
+                                            <p class="h3 mb-0">{{item.content}}</p>
+                                        </div>
+                                        <div class="d-flex">
+                                            <a href="#" @click.prevent="doItNow(i)" class="me-4">
+                                                <i class="fas fa-hourglass-start text-theme"></i>
+                                            </a>
+                                            <a href="#" @click.prevent="delTask(i)">
+                                                <i class="fas fa-times text-theme"></i>
+                                            </a>    
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 position-relative" v-else>
+                    <img width="47" height="47" src="images/tomato_w.png" alt="tomato_w"
+                        class="position-absolute" style="top: 24px; left: 28px;">
+                    <div class="task position-absolute py-3 ps-4 pe-3 text-white">
+                        {{nowDoingTask.content}}
+                    </div>
+                    <div class="rounded p-3 py-4 h-100
+                        d-flex flex-column justify-content-center align-items-center" :class="{'bg-theme-primary' : !timeStop , 'bg-theme-reset' : timeStop}">
+                        <div v-if="!clockWorking" class="align-self-stretch text-center">
+                            <div class="px-5 pb-3">
+                                <div class="text-center">
+                                    <p class="mb-0 text-white h5">{{Nowreset ? NowTime : '25:00'}}</p>
+                                    <img width="93" height="93" src="images/tomato_w.png" alt="tomato_w">
+                                </div>
+                                <div class="progress rounded-pill p-1 mt-3">
+                                    <div class="progress-bar bg-white rounded-pill" role="progressbar" style="width: 50%"
+                                        aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                            <div class="mt-5 text-center" v-if="!Nowreset">
+                                <button type="button" class="btn btn-outline-light me-2"
+                                    @click.prevent="clockStart">開始</button>
+                                <button type="button" class="btn btn-outline-light"
+                                    @click.prevent="this.showList = true">任務</button>
+                            </div>
+                            <div class="mt-5 text-center" v-else>
+                                <button type="button" class="btn btn-outline-light me-2"
+                                    @click.prevent="resetEnd">休息結束</button>
+                                <button type="button" class="btn btn-outline-light"
+                                    @click.prevent="this.showList = true">任務</button>
+                            </div>
+                        </div>
+                        <div v-else class="align-self-stretch">
+                            <div class="pb-3 px-5">
+                                <div class="d-flex flex-column justify-content-end">
+                                    <div class="progressBox"></div>
+                                    <div class="progress overflow-visible rotate-4deg rounded-pill p-1">
+                                        <div class="progress-bar bg-white overflow-visible rounded-pill position-relative" role="progressbar"
+                                            :style="{width: percentage + '%'}" aria-valuenow="25" aria-valuemin="0"
+                                            aria-valuemax="100">
+                                            <div class="text-center position-absolute" style="bottom:10px;right:-46px;">
+                                                <p class="mb-0 me-2 text-white h5" style="transform: rotate(-4deg);">{{NowTime}}</p>
+                                                <img width="93" height="93" src="images/tomato_w.png" alt="tomato_w">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-5 text-center">
+                                <button type="button" class="btn btn-outline-light me-2"
+                                    @click.prevent="clockStop">{{timeStop ? '繼續' :'暫停'}}</button>
+                                <button type="button" class="btn btn-outline-light"
+                                    @click.prevent="clockEnd">放棄</button>
+                            </div>
+                        </div>
+                        <p class="mt-5 text-white">你已經拯救 {{TomatoNum}} 顆迷途番茄</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script src="all.js"></script>
+</body>
+
+</html>

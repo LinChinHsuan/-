@@ -1,0 +1,79 @@
+/* base */
+body {
+    height: 100vh;
+}
+@media (max-height:99vh) {
+    body {
+        height: auto;
+    }
+}
+ul {
+    list-style-type:none;
+}
+a:hover{
+    color: #FF5100;
+}
+
+/* 通用 */
+.bg-theme-primary {
+    background-color: #FF5100;
+}
+.bg-theme-primary-circle {
+    background:radial-gradient(circle at 40% 35%,#ffffff 0%,#ffffff 80%,#FF5100 80%);
+}
+.bg-theme-secondary {
+    background-color: #4b4b4b;
+}
+.bg-theme-reset {
+    background-color: #ACB9D9;
+}
+.text-theme {
+    color: #FF5100;
+}
+.h-80 {
+    height: 80vh;
+}
+.border-theme {
+    border: 1px solid #FF5100;
+}
+.rotate-4deg {
+    transform: rotate(4deg);
+}
+
+/* 修改bs class */
+.nav-link {
+    color: #FF5100;
+}
+.nav-link:hover {
+    color: #FF5100;
+    border-bottom: 1px solid #FF5100;
+}
+.nav-link.active {
+    color: #FF5100;
+    border-bottom: 1px solid #FF5100;
+}
+.form-control:focus {
+    box-shadow: 0 0 0 .25rem rgba(255, 81, 0, .3);
+}
+.progress {
+    background-color: rgba(0, 0, 0, .3);
+}
+
+/* 自訂style */
+.tag {
+    background-color: rgba(0, 0, 0, .3);
+    position: fixed;
+    top: 100px;
+    left: 0;
+    border-radius:0 39px 39px 0;
+}
+.task {
+    background-color: rgba(0, 0, 0, .3);
+    border-radius:39px 0 0 39px;
+    top: 55px;
+    right: 12px;
+}
+.progressBox {
+    height: 130px;
+}
+
